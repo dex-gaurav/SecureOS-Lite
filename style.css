@@ -1,0 +1,238 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Consolas, "Courier New", monospace;
+    color: #d8ffe4;
+    background: #050805;
+}
+
+.screen {
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.hidden {
+    display: none;
+}
+
+.boot-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        linear-gradient(rgba(0, 255, 90, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 90, 0.08) 1px, transparent 1px),
+        #020402;
+    background-size: 28px 28px;
+}
+
+.boot-box {
+    width: min(520px, 90vw);
+    text-align: center;
+    border: 1px solid #1eff75;
+    padding: 36px;
+    background: rgba(0, 20, 8, 0.86);
+    box-shadow: 0 0 32px rgba(30, 255, 117, 0.22);
+}
+
+.boot-logo {
+    width: 82px;
+    height: 82px;
+    margin: 0 auto 18px;
+    border: 2px solid #1eff75;
+    display: grid;
+    place-items: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.boot-bar {
+    height: 12px;
+    border: 1px solid #1eff75;
+    margin-top: 24px;
+    padding: 2px;
+}
+
+#bootProgress {
+    height: 100%;
+    width: 0%;
+    background: #1eff75;
+    transition: width 0.4s linear;
+}
+
+.top-bar,
+.desktop-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #1b7d3e;
+    background: #071208;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+}
+
+.login-panel,
+.card,
+.panel,
+.terminal-output {
+    border: 1px solid #1b7d3e;
+    background: rgba(7, 18, 8, 0.95);
+    box-shadow: 0 0 22px rgba(30, 255, 117, 0.08);
+}
+
+.login-panel {
+    width: min(430px, 94vw);
+    margin: 70px auto 0;
+    padding: 28px;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin-top: 0;
+}
+
+.muted {
+    color: #8dbb9a;
+    font-size: 14px;
+}
+
+label {
+    display: block;
+    margin-top: 16px;
+    margin-bottom: 6px;
+    color: #afffca;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #1b7d3e;
+    background: #020402;
+    color: #d8ffe4;
+    font-family: inherit;
+}
+
+button {
+    border: 1px solid #1eff75;
+    background: #08230f;
+    color: #d8ffe4;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+button:hover {
+    background: #10491f;
+}
+
+.primary-btn {
+    width: 100%;
+    margin-top: 18px;
+    background: #1eff75;
+    color: #031006;
+    font-weight: bold;
+}
+
+.captcha-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+#captchaText {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    letter-spacing: 5px;
+    font-weight: bold;
+    background: #020402;
+    border: 1px dashed #1eff75;
+}
+
+.message {
+    min-height: 22px;
+    margin-top: 14px;
+}
+
+.desktop-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
+    gap: 18px;
+}
+
+.card {
+    padding: 18px;
+    min-height: 190px;
+}
+
+.card p {
+    color: #9ecdaa;
+    min-height: 52px;
+}
+
+.terminal-output {
+    margin-top: 22px;
+    min-height: 110px;
+    padding: 18px;
+    white-space: pre-line;
+    color: #1eff75;
+}
+
+.panel {
+    margin-top: 22px;
+    padding: 18px;
+}
+
+.lab-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-top: 1px solid #174c28;
+}
+
+.log-list {
+    max-height: 260px;
+    overflow: auto;
+}
+
+.log-item {
+    padding: 10px;
+    border-bottom: 1px solid #174c28;
+    color: #bfffd0;
+}
+
+.success {
+    color: #1eff75;
+}
+
+.error {
+    color: #ff6b6b;
+}
+
+@media (max-width: 900px) {
+    .desktop-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 560px) {
+    .desktop-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .desktop-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+}

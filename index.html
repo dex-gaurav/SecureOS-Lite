@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureOS AuthShield Lite</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="bootScreen" class="screen boot-screen">
+        <div class="boot-box">
+            <div class="boot-logo">SO</div>
+            <h1>SecureOS AuthShield Lite</h1>
+            <p id="bootText">Loading kernel security modules...</p>
+            <div class="boot-bar">
+                <div id="bootProgress"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loginScreen" class="screen hidden">
+        <div class="top-bar">
+            <span>SecureOS Lock Screen</span>
+            <span id="clock">--:--:--</span>
+        </div>
+
+        <div class="login-panel">
+            <h2>Authentication Required</h2>
+            <p class="muted">Manual login, captcha, and access-control simulation</p>
+
+            <label>Username</label>
+            <input id="username" type="text" placeholder="admin / user / guest">
+
+            <label>Password</label>
+            <input id="password" type="password" placeholder="Enter password">
+
+            <div class="captcha-row">
+                <span id="captchaText">-----</span>
+                <button onclick="generateCaptcha()">Refresh</button>
+            </div>
+
+            <label>Enter Captcha</label>
+            <input id="captchaInput" type="text" placeholder="Type captcha">
+
+            <button class="primary-btn" onclick="login()">Unlock SecureOS</button>
+            <p id="loginMessage" class="message"></p>
+        </div>
+    </div>
+
+    <div id="desktopScreen" class="screen hidden">
+        <div class="desktop-header">
+            <div>
+                <h1>SecureOS Desktop</h1>
+                <p id="welcomeText">Welcome</p>
+            </div>
+            <button onclick="logout()">Logout</button>
+        </div>
+
+        <div class="desktop-grid">
+            <div class="card">
+                <h3>View Files</h3>
+                <p>Simulates read permission on OS files.</p>
+                <button onclick="viewFiles()">Open Files</button>
+            </div>
+
+            <div class="card">
+                <h3>Request Resource Access</h3>
+                <p>Checks role permissions using a manual access matrix.</p>
+                <select id="resourceSelect">
+                    <option value="read">Read File</option>
+                    <option value="write">Write File</option>
+                    <option value="execute">Execute System Tool</option>
+                </select>
+                <button onclick="requestAccess()">Request</button>
+            </div>
+
+            <div class="card">
+                <h3>Run Security Lab</h3>
+                <p>Simple browser simulation of OS security concepts.</p>
+                <button onclick="showSection('labSection')">Open Lab</button>
+            </div>
+
+            <div class="card">
+                <h3>View Audit Logs</h3>
+                <p>Shows actions recorded in a JavaScript array.</p>
+                <button onclick="showSection('logSection')">Open Logs</button>
+            </div>
+        </div>
+
+        <div id="outputBox" class="terminal-output">
+            secureOS&gt; desktop ready
+        </div>
+
+        <div id="labSection" class="panel hidden">
+            <h2>Security Lab</h2>
+
+            <div class="lab-row">
+                <div>
+                    <h3>Semaphore Demo</h3>
+                    <p>Choose how many processes compete for one critical section.</p>
+                    <input id="processCount" type="number" min="2" max="8" value="4">
+                </div>
+                <button onclick="runSemaphoreLab()">Run</button>
+            </div>
+
+            <div class="lab-row">
+                <div>
+                    <h3>Buffer Overflow Demo</h3>
+                    <p>Enter short or long input to show safe and overflow cases.</p>
+                    <input id="bufferInput" type="text" value="HELLO" placeholder="Try HELLO or AAAAAAAAAAAAAAAA">
+                </div>
+                <button onclick="runBufferLab()">Run</button>
+            </div>
+
+            <div class="lab-row">
+                <div>
+                    <h3>Trapdoor Scan</h3>
+                    <p>Choose normal users or inject a hidden admin account.</p>
+                    <select id="trapdoorMode">
+                        <option value="safe">Normal user list</option>
+                        <option value="attack">Inject hidden_admin</option>
+                    </select>
+                </div>
+                <button onclick="runTrapdoorScan()">Scan</button>
+            </div>
+        </div>
+
+        <div id="logSection" class="panel hidden">
+            <h2>Audit Logs</h2>
+            <div id="logList" class="log-list"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
