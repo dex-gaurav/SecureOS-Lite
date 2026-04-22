@@ -39,3 +39,36 @@ void verifyLogin() {
     cout << "Educational password hash: " << simpleHash(password) << "\n";
 }
 
+// Checks basic password strength using loops and if-else.
+void checkPasswordStrength() {
+    string password;
+    int hasUpper = 0;
+    int hasLower = 0;
+    int hasDigit = 0;
+    int hasSpecial = 0;
+
+    cout << "Enter password to check: ";
+    cin >> password;
+
+    for (int i = 0; i < password.length(); i++) {
+        char ch = password[i];
+
+        if (ch >= 'A' && ch <= 'Z') {
+            hasUpper = 1;
+        } else if (ch >= 'a' && ch <= 'z') {
+            hasLower = 1;
+        } else if (ch >= '0' && ch <= '9') {
+            hasDigit = 1;
+        } else {
+            hasSpecial = 1;
+        }
+    }
+
+    if (password.length() >= 8 && hasUpper && hasLower && hasDigit && hasSpecial) {
+        cout << "Password strength: STRONG\n";
+    } else {
+        cout << "Password strength: WEAK\n";
+        cout << "Use 8 characters, uppercase, lowercase, digit, and special symbol.\n";
+    }
+}
+
