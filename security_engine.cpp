@@ -72,3 +72,33 @@ void checkPasswordStrength() {
     }
 }
 
+// Demonstrates an access matrix:
+// Admin = read, write, execute
+// User  = read, write
+// Guest = read only
+void accessCheck() {
+    string role;
+    string action;
+    int allowed = 0;
+
+    cout << "Enter role (admin/user/guest): ";
+    cin >> role;
+
+    cout << "Enter action (read/write/execute): ";
+    cin >> action;
+
+    if (role == "admin") {
+        allowed = 1;
+    } else if (role == "user" && (action == "read" || action == "write")) {
+        allowed = 1;
+    } else if (role == "guest" && action == "read") {
+        allowed = 1;
+    }
+
+    if (allowed) {
+        cout << "Permission granted by access matrix.\n";
+    } else {
+        cout << "Permission denied by access matrix.\n";
+    }
+}
+
