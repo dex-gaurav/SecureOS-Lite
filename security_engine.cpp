@@ -102,3 +102,52 @@ void accessCheck() {
     }
 }
 
+// Demonstrates a semaphore protecting a critical section.
+void semaphoreSimulation() {
+    int semaphore = 1;
+    int processCount;
+
+    cout << "Enter number of processes: ";
+    cin >> processCount;
+
+    if (processCount < 2) {
+        processCount = 2;
+    }
+
+    if (processCount > 10) {
+        processCount = 10;
+    }
+
+    cout << "Number of processes: " << processCount << "\n";
+    cout << "Initial semaphore value: " << semaphore << "\n";
+
+    cout << "\nArrival phase:\n";
+    for (int i = 1; i <= processCount; i++) {
+        cout << "P" << i << " arrives and calls wait(S)\n";
+
+        if (i == 1 && semaphore == 1) {
+            semaphore--;
+            cout << "S becomes " << semaphore << ", P1 enters critical section\n";
+        } else {
+            cout << "S is 0, so P" << i << " joins waiting queue\n";
+        }
+    }
+
+    cout << "\nExecution phase:\n";
+    for (int i = 1; i <= processCount; i++) {
+        cout << "P" << i << " is executing critical section\n";
+        cout << "P" << i << " completes work and calls signal(S)\n";
+        semaphore++;
+        cout << "S becomes " << semaphore << "\n";
+
+        if (i < processCount) {
+            cout << "Scheduler wakes P" << i + 1 << " from waiting queue\n";
+            cout << "P" << i + 1 << " calls wait(S)\n";
+            semaphore--;
+            cout << "S becomes " << semaphore << ", P" << i + 1 << " enters critical section\n\n";
+        } else {
+            cout << "All processes completed. Critical section is free.\n";
+        }
+    }
+}
+
