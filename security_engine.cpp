@@ -151,3 +151,22 @@ void semaphoreSimulation() {
     }
 }
 
+// Demonstrates buffer overflow prevention using bounds checking.
+void bufferOverflowDemo() {
+    string input;
+    int bufferSize = 10;
+
+    cout << "Enter input for buffer: ";
+    cin >> input;
+
+    cout << "Buffer size is " << bufferSize << "\n";
+    cout << "Input length is " << input.length() << "\n";
+
+    if (input.length() > bufferSize) {
+        cout << "Vulnerable mode: overflow could happen.\n";
+        cout << "Protected mode: input blocked by bounds check.\n";
+    } else {
+        cout << "Input safely fits inside buffer.\n";
+    }
+}
+
