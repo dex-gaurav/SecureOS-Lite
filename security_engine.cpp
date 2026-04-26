@@ -170,3 +170,29 @@ void bufferOverflowDemo() {
     }
 }
 
+// Scans for simple suspicious account names.
+void trapdoorScan() {
+    string users[5] = {"admin", "user", "guest", "student", "test"};
+    string mode;
+    int anomaly = 0;
+
+    cout << "Enter scan mode (safe/attack): ";
+    cin >> mode;
+
+    if (mode == "attack") {
+        users[4] = "hidden_admin";
+    }
+
+    for (int i = 0; i < 5; i++) {
+        if (users[i] == "hidden_admin" || users[i] == "rootkit" || users[i] == "backdoor") {
+            anomaly = 1;
+        }
+    }
+
+    if (anomaly) {
+        cout << "ANOMALY DETECTED: suspicious hidden account found\n";
+    } else {
+        cout << "SAFE\n";
+    }
+}
+
