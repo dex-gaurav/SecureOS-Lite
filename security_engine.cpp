@@ -196,3 +196,42 @@ void trapdoorScan() {
     }
 }
 
+int main() {
+    int choice;
+
+    do {
+        cout << "\n==== SecureOS AuthShield Lite Engine ====\n";
+        cout << "1 Verify login\n";
+        cout << "2 Check password strength\n";
+        cout << "3 Access check\n";
+        cout << "4 Semaphore simulation\n";
+        cout << "5 Buffer overflow demo\n";
+        cout << "6 Trapdoor scan\n";
+        cout << "0 Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            verifyLogin();
+        } else if (choice == 2) {
+            checkPasswordStrength();
+        } else if (choice == 3) {
+            accessCheck();
+        } else if (choice == 4) {
+            semaphoreSimulation();
+        } else if (choice == 5) {
+            bufferOverflowDemo();
+        } else if (choice == 6) {
+            trapdoorScan();
+        } else if (choice == 0) {
+            cout << "Exiting security engine.\n";
+        } else {
+            cout << "Invalid choice.\n";
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}
+
+
