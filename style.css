@@ -102,6 +102,12 @@ p {
     font-size: 14px;
 }
 
+.hint {
+    color: #8dbb9a;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
 label {
     display: block;
     margin-top: 16px;
@@ -203,6 +209,13 @@ button:hover {
 .log-list {
     max-height: 260px;
     overflow: auto;
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
 }
 
 .log-item {

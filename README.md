@@ -16,6 +16,40 @@ README.md
 
 No framework, package, database, API, or external library is used.
 
+## Flow Diagram
+
+```text
+Start
+  |
+  v
+Boot Screen
+  |
+  v
+Login Form
+  |
+  +--> Empty fields / invalid username -> Error + Audit Log
+  |
+  +--> Captcha wrong -> Failed Attempt + Audit Log
+  |
+  +--> Password wrong -> Failed Attempt + Audit Log
+  |
+  +--> 3 failed attempts -> Account locked for 30 seconds
+  |
+  v
+Login Success
+  |
+  v
+SecureOS Desktop
+  |
+  +--> View Files -> Access Matrix Check
+  |
+  +--> Request Resource -> Read/Write/Execute Permission Check
+  |
+  +--> Security Lab -> Semaphore / Buffer / Trapdoor Demo
+  |
+  +--> Audit Logs -> Persistent browser logs
+```
+
 ## Project Objective
 
 The objective is to demonstrate important OS security concepts in a beginner-friendly way:
@@ -89,6 +123,23 @@ The project verifies username and password manually. No authentication library i
 
 JavaScript generates a random five-character captcha. The user must type it correctly before login.
 
+### Input Validation
+
+The login form checks:
+
+- username is not empty
+- password is not empty
+- captcha is not empty
+- username contains only letters, numbers, and underscore
+
+The buffer lab also rejects empty input.
+
+### Login Attempt Limit
+
+Each username gets only 3 failed attempts. After 3 failures, that username is locked for 30 seconds.
+
+Failed attempt data is saved in browser localStorage.
+
 ### Access Matrix
 
 Permissions are manually checked:
@@ -156,6 +207,24 @@ attack
 ### Audit Logs
 
 The web project stores actions in a JavaScript array and displays them in the audit log panel.
+Logs are also saved in browser localStorage, so they remain after page refresh.
+
+## Test Case Table
+
+| Test No. | Feature | Input | Expected Output |
+| --- | --- | --- | --- |
+| 1 | Login success | `admin / admin123` with correct captcha | Desktop opens |
+| 2 | Login failure | Wrong password | Login failed + audit log |
+| 3 | Captcha failure | Wrong captcha | Captcha failed + new captcha |
+| 4 | Login attempt limit | 3 wrong attempts | Username locked for 30 seconds |
+| 5 | Access matrix admin | Admin executes tool | Permission granted |
+| 6 | Access matrix guest | Guest writes file | Permission denied |
+| 7 | Semaphore | Process count `4` | P1 to P4 complete one by one |
+| 8 | Buffer safe | `HELLO` | Input safely fits |
+| 9 | Buffer overflow | `AAAAAAAAAAAAAAAA` | Bounds check blocks input |
+| 10 | Trapdoor safe | Normal user list | SAFE |
+| 11 | Trapdoor attack | Inject `hidden_admin` | ANOMALY DETECTED |
+| 12 | Persistent logs | Refresh after actions | Logs remain visible |
 
 ## Viva Questions
 
@@ -194,4 +263,3 @@ A trapdoor is a hidden entry point or hidden account that can bypass normal secu
 ### 9. Is this production-level security?
 
 No. It is an educational simulator. Real systems need secure cryptography, databases, server-side validation, and hardened authentication.
-

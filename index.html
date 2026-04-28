@@ -44,6 +44,7 @@
 
             <button class="primary-btn" onclick="login()">Unlock SecureOS</button>
             <p id="loginMessage" class="message"></p>
+            <p class="hint">Security rule: 3 failed attempts lock the selected username for 30 seconds.</p>
         </div>
     </div>
 
@@ -126,7 +127,11 @@
         </div>
 
         <div id="logSection" class="panel hidden">
-            <h2>Audit Logs</h2>
+            <div class="panel-title">
+                <h2>Audit Logs</h2>
+                <button onclick="clearLogs()">Clear Logs</button>
+            </div>
+            <p class="muted">Logs are saved in browser localStorage, so they stay after refresh.</p>
             <div id="logList" class="log-list"></div>
         </div>
     </div>

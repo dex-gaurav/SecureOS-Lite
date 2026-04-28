@@ -7,11 +7,47 @@ var users = [
 var auditLogs = [];
 var currentUser = null;
 var currentCaptcha = "";
+var failedAttempts = {};
+var lockUntil = {};
+var maxAttempts = 3;
+var lockSeconds = 30;
+
+function loadSavedData() {
+    var savedLogs = localStorage.getItem("secureos_lite_logs");
+    var savedAttempts = localStorage.getItem("secureos_lite_attempts");
+    var savedLocks = localStorage.getItem("secureos_lite_locks");
+
+    if (savedLogs) {
+        auditLogs = JSON.parse(savedLogs);
+    }
+
+    if (savedAttempts) {
+        failedAttempts = JSON.parse(savedAttempts);
+    }
+
+    if (savedLocks) {
+        lockUntil = JSON.parse(savedLocks);
+    }
+}
+
+function saveSecurityState() {
+    localStorage.setItem("secureos_lite_logs", JSON.stringify(auditLogs));
+    localStorage.setItem("secureos_lite_attempts", JSON.stringify(failedAttempts));
+    localStorage.setItem("secureos_lite_locks", JSON.stringify(lockUntil));
+}
 
 function addLog(message) {
     var time = new Date().toLocaleTimeString();
     auditLogs.unshift(time + " - " + message);
+    saveSecurityState();
     updateLogs();
+}
+
+function clearLogs() {
+    auditLogs = [];
+    saveSecurityState();
+    updateLogs();
+    document.getElementById("outputBox").innerText = "secureOS> audit logs cleared";
 }
 
 function showScreen(id) {
@@ -77,11 +113,36 @@ function login() {
     var password = document.getElementById("password").value;
     var captchaInput = document.getElementById("captchaInput").value.trim().toUpperCase();
     var message = document.getElementById("loginMessage");
+    var usernamePattern = /^[a-zA-Z0-9_]+$/;
+    var now = Date.now();
+
+    if (username === "" || password === "" || captchaInput === "") {
+        message.innerText = "All fields are required.";
+        message.className = "message error";
+        addLog("login validation failed because fields were empty");
+        return;
+    }
+
+    if (!usernamePattern.test(username)) {
+        message.innerText = "Username can contain only letters, numbers, and underscore.";
+        message.className = "message error";
+        addLog("login validation failed for invalid username format");
+        return;
+    }
+
+    if (lockUntil[username] && now < lockUntil[username]) {
+        var secondsLeft = Math.ceil((lockUntil[username] - now) / 1000);
+        message.innerText = "Account locked. Try again after " + secondsLeft + " seconds.";
+        message.className = "message error";
+        addLog("locked account login attempt for " + username);
+        return;
+    }
 
     if (captchaInput !== currentCaptcha) {
         message.innerText = "Captcha failed.";
         message.className = "message error";
         addLog("captcha failed for " + username);
+        recordFailedAttempt(username);
         generateCaptcha();
         return;
     }
@@ -92,11 +153,15 @@ function login() {
         message.innerText = "Login failed.";
         message.className = "message error";
         addLog("login failed for " + username);
+        recordFailedAttempt(username);
         generateCaptcha();
         return;
     }
 
     currentUser = user;
+    failedAttempts[username] = 0;
+    lockUntil[username] = 0;
+    saveSecurityState();
     message.innerText = "";
     document.getElementById("welcomeText").innerText = "Logged in as " + user.username + " (" + user.role + ")";
     document.getElementById("outputBox").innerText = "secureOS> login success\nsecureOS> role loaded: " + user.role;
@@ -104,8 +169,29 @@ function login() {
     showScreen("desktopScreen");
 }
 
+function recordFailedAttempt(username) {
+    if (username === "") {
+        return;
+    }
+
+    if (!failedAttempts[username]) {
+        failedAttempts[username] = 0;
+    }
+
+    failedAttempts[username] = failedAttempts[username] + 1;
+
+    if (failedAttempts[username] >= maxAttempts) {
+        lockUntil[username] = Date.now() + lockSeconds * 1000;
+        addLog(username + " locked after " + maxAttempts + " failed attempts");
+    }
+
+    saveSecurityState();
+}
+
 function logout() {
-    addLog("logout by " + currentUser.username);
+    if (currentUser !== null) {
+        addLog("logout by " + currentUser.username);
+    }
     currentUser = null;
     document.getElementById("password").value = "";
     generateCaptcha();
@@ -179,10 +265,12 @@ function runSemaphoreLab() {
 
     if (isNaN(count) || count < 2) {
         count = 2;
+        document.getElementById("processCount").value = count;
     }
 
     if (count > 8) {
         count = 8;
+        document.getElementById("processCount").value = count;
     }
 
     output = output + "Number of processes: " + count + "\n";
@@ -227,8 +315,14 @@ function runSemaphoreLab() {
 }
 
 function runBufferLab() {
-    var sampleInput = document.getElementById("bufferInput").value;
+    var sampleInput = document.getElementById("bufferInput").value.trim();
     var bufferSize = 10;
+
+    if (sampleInput === "") {
+        document.getElementById("outputBox").innerText = "secureOS> buffer lab error\nInput cannot be empty.";
+        addLog("buffer lab validation failed because input was empty");
+        return;
+    }
 
     if (sampleInput.length > bufferSize) {
         document.getElementById("outputBox").innerText =
@@ -294,6 +388,7 @@ function updateLogs() {
     }
 }
 
+loadSavedData();
 setInterval(updateClock, 1000);
 updateClock();
 startBoot();
