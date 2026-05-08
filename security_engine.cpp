@@ -1,3 +1,5 @@
+// SecureOS AuthShield Lite C++ Engine
+// This console program demonstrates OS security concepts separately from the web UI.
 #include <iostream>
 #include <string>
 using namespace std;
@@ -7,6 +9,7 @@ using namespace std;
 int simpleHash(string text) {
     int hash = 0;
 
+    // Each character changes the hash based on its position in the password.
     for (int i = 0; i < text.length(); i++) {
         hash = hash + text[i] * (i + 1);
         hash = hash % 100000;
@@ -20,12 +23,14 @@ void verifyLogin() {
     string username;
     string password;
 
+    // Take username and password input from the console.
     cout << "Enter username: ";
     cin >> username;
 
     cout << "Enter password: ";
     cin >> password;
 
+    // Compare input with hardcoded sample accounts.
     if (username == "admin" && password == "admin123") {
         cout << "Login successful. Role: Admin\n";
     } else if (username == "user" && password == "user123") {
@@ -36,6 +41,7 @@ void verifyLogin() {
         cout << "Login failed.\n";
     }
 
+    // Display a simple hash to explain the idea of password transformation.
     cout << "Educational password hash: " << simpleHash(password) << "\n";
 }
 
@@ -50,6 +56,7 @@ void checkPasswordStrength() {
     cout << "Enter password to check: ";
     cin >> password;
 
+    // Check every character to see which password rules are satisfied.
     for (int i = 0; i < password.length(); i++) {
         char ch = password[i];
 
@@ -64,6 +71,7 @@ void checkPasswordStrength() {
         }
     }
 
+    // A strong password must satisfy all rules.
     if (password.length() >= 8 && hasUpper && hasLower && hasDigit && hasSpecial) {
         cout << "Password strength: STRONG\n";
     } else {
@@ -87,6 +95,7 @@ void accessCheck() {
     cout << "Enter action (read/write/execute): ";
     cin >> action;
 
+    // Manual access matrix decision based on role and action.
     if (role == "admin") {
         allowed = 1;
     } else if (role == "user" && (action == "read" || action == "write")) {
@@ -110,6 +119,7 @@ void semaphoreSimulation() {
     cout << "Enter number of processes: ";
     cin >> processCount;
 
+    // Limit process count so the demo stays readable.
     if (processCount < 2) {
         processCount = 2;
     }
@@ -121,6 +131,7 @@ void semaphoreSimulation() {
     cout << "Number of processes: " << processCount << "\n";
     cout << "Initial semaphore value: " << semaphore << "\n";
 
+    // Arrival phase shows wait(S) calls and waiting queue behavior.
     cout << "\nArrival phase:\n";
     for (int i = 1; i <= processCount; i++) {
         cout << "P" << i << " arrives and calls wait(S)\n";
@@ -133,6 +144,7 @@ void semaphoreSimulation() {
         }
     }
 
+    // Execution phase shows signal(S) and the next process entering.
     cout << "\nExecution phase:\n";
     for (int i = 1; i <= processCount; i++) {
         cout << "P" << i << " is executing critical section\n";
@@ -162,6 +174,7 @@ void bufferOverflowDemo() {
     cout << "Buffer size is " << bufferSize << "\n";
     cout << "Input length is " << input.length() << "\n";
 
+    // Bounds checking prevents input from exceeding the simulated buffer.
     if (input.length() > bufferSize) {
         cout << "Vulnerable mode: overflow could happen.\n";
         cout << "Protected mode: input blocked by bounds check.\n";
@@ -179,10 +192,12 @@ void trapdoorScan() {
     cout << "Enter scan mode (safe/attack): ";
     cin >> mode;
 
+    // Attack mode inserts a suspicious hidden account.
     if (mode == "attack") {
         users[4] = "hidden_admin";
     }
 
+    // Scan all accounts for trapdoor-style names.
     for (int i = 0; i < 5; i++) {
         if (users[i] == "hidden_admin" || users[i] == "rootkit" || users[i] == "backdoor") {
             anomaly = 1;
@@ -200,6 +215,7 @@ int main() {
     int choice;
 
     do {
+        // Main menu lets the user run each security demonstration separately.
         cout << "\n==== SecureOS AuthShield Lite Engine ====\n";
         cout << "1 Verify login\n";
         cout << "2 Check password strength\n";
@@ -211,6 +227,7 @@ int main() {
         cout << "Enter choice: ";
         cin >> choice;
 
+        // Route menu choices to the correct function.
         if (choice == 1) {
             verifyLogin();
         } else if (choice == 2) {
@@ -233,5 +250,4 @@ int main() {
 
     return 0;
 }
-
 

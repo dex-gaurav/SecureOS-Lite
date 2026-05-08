@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Boot screen: first view shown to simulate a small OS startup sequence. -->
     <div id="bootScreen" class="screen boot-screen">
         <div class="boot-box">
             <div class="boot-logo">SO</div>
@@ -18,6 +19,7 @@
         </div>
     </div>
 
+    <!-- Login screen: demonstrates authentication, captcha, and account lockout. -->
     <div id="loginScreen" class="screen hidden">
         <div class="top-bar">
             <span>SecureOS Lock Screen</span>
@@ -48,6 +50,7 @@
         </div>
     </div>
 
+    <!-- Desktop screen: main dashboard shown only after successful login. -->
     <div id="desktopScreen" class="screen hidden">
         <div class="desktop-header">
             <div>
@@ -57,6 +60,7 @@
             <button onclick="logout()">Logout</button>
         </div>
 
+        <!-- Main feature cards: each card represents one OS security module. -->
         <div class="desktop-grid">
             <div class="card">
                 <h3>View Files</h3>
@@ -88,10 +92,12 @@
             </div>
         </div>
 
+        <!-- Terminal-style output: displays results of file access, labs, and security checks. -->
         <div id="outputBox" class="terminal-output">
             secureOS&gt; desktop ready
         </div>
 
+        <!-- Security lab: interactive demonstrations for OS concepts. -->
         <div id="labSection" class="panel hidden">
             <h2>Security Lab</h2>
 
@@ -126,6 +132,7 @@
             </div>
         </div>
 
+        <!-- Audit logs: shows user activity saved in browser localStorage. -->
         <div id="logSection" class="panel hidden">
             <div class="panel-title">
                 <h2>Audit Logs</h2>
@@ -136,6 +143,7 @@
         </div>
     </div>
 
+    <!-- Main script: controls screens, login logic, access matrix, labs, and logs. -->
     <script src="script.js"></script>
 </body>
 </html>

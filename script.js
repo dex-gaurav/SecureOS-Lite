@@ -1,9 +1,12 @@
+// Sample users for the educational authentication system.
+// Real systems should store users securely on a server, not inside JavaScript.
 var users = [
     { username: "admin", password: "admin123", role: "admin" },
     { username: "user", password: "user123", role: "user" },
     { username: "guest", password: "guest123", role: "guest" }
 ];
 
+// Runtime state for logs, active user, captcha, and login protection.
 var auditLogs = [];
 var currentUser = null;
 var currentCaptcha = "";
@@ -12,6 +15,7 @@ var lockUntil = {};
 var maxAttempts = 3;
 var lockSeconds = 30;
 
+// Loads saved logs and account lockout data from browser localStorage.
 function loadSavedData() {
     var savedLogs = localStorage.getItem("secureos_lite_logs");
     var savedAttempts = localStorage.getItem("secureos_lite_attempts");
@@ -30,12 +34,14 @@ function loadSavedData() {
     }
 }
 
+// Saves logs and failed-attempt data so it remains after page refresh.
 function saveSecurityState() {
     localStorage.setItem("secureos_lite_logs", JSON.stringify(auditLogs));
     localStorage.setItem("secureos_lite_attempts", JSON.stringify(failedAttempts));
     localStorage.setItem("secureos_lite_locks", JSON.stringify(lockUntil));
 }
 
+// Adds a timestamped entry to the audit log.
 function addLog(message) {
     var time = new Date().toLocaleTimeString();
     auditLogs.unshift(time + " - " + message);
@@ -43,6 +49,7 @@ function addLog(message) {
     updateLogs();
 }
 
+// Clears visible and saved audit logs when the user clicks Clear Logs.
 function clearLogs() {
     auditLogs = [];
     saveSecurityState();
@@ -50,6 +57,7 @@ function clearLogs() {
     document.getElementById("outputBox").innerText = "secureOS> audit logs cleared";
 }
 
+// Shows one main screen at a time: boot, login, or desktop.
 function showScreen(id) {
     document.getElementById("bootScreen").classList.add("hidden");
     document.getElementById("loginScreen").classList.add("hidden");
@@ -57,6 +65,7 @@ function showScreen(id) {
     document.getElementById(id).classList.remove("hidden");
 }
 
+// Simulates a boot process before opening the login screen.
 function startBoot() {
     var progress = 0;
     var bootProgress = document.getElementById("bootProgress");
@@ -80,10 +89,12 @@ function startBoot() {
     }, 500);
 }
 
+// Keeps the lock-screen clock updated.
 function updateClock() {
     document.getElementById("clock").innerText = new Date().toLocaleTimeString();
 }
 
+// Creates a random 5-character captcha for login verification.
 function generateCaptcha() {
     var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     var captcha = "";
@@ -98,6 +109,7 @@ function generateCaptcha() {
     document.getElementById("captchaInput").value = "";
 }
 
+// Searches the sample user list for matching username and password.
 function findUser(username, password) {
     for (var i = 0; i < users.length; i++) {
         if (users[i].username === username && users[i].password === password) {
@@ -108,6 +120,7 @@ function findUser(username, password) {
     return null;
 }
 
+// Complete login flow: validates fields, checks lockout, captcha, and credentials.
 function login() {
     var username = document.getElementById("username").value.trim();
     var password = document.getElementById("password").value;
@@ -116,6 +129,7 @@ function login() {
     var usernamePattern = /^[a-zA-Z0-9_]+$/;
     var now = Date.now();
 
+    // Basic validation prevents empty login requests.
     if (username === "" || password === "" || captchaInput === "") {
         message.innerText = "All fields are required.";
         message.className = "message error";
@@ -123,6 +137,7 @@ function login() {
         return;
     }
 
+    // Username format validation blocks unusual characters.
     if (!usernamePattern.test(username)) {
         message.innerText = "Username can contain only letters, numbers, and underscore.";
         message.className = "message error";
@@ -130,6 +145,7 @@ function login() {
         return;
     }
 
+    // Account lockout check after repeated failed attempts.
     if (lockUntil[username] && now < lockUntil[username]) {
         var secondsLeft = Math.ceil((lockUntil[username] - now) / 1000);
         message.innerText = "Account locked. Try again after " + secondsLeft + " seconds.";
@@ -138,6 +154,7 @@ function login() {
         return;
     }
 
+    // Captcha must match before credentials are checked.
     if (captchaInput !== currentCaptcha) {
         message.innerText = "Captcha failed.";
         message.className = "message error";
@@ -149,6 +166,7 @@ function login() {
 
     var user = findUser(username, password);
 
+    // Failed credentials count toward account lockout.
     if (user === null) {
         message.innerText = "Login failed.";
         message.className = "message error";
@@ -158,6 +176,7 @@ function login() {
         return;
     }
 
+    // Successful login resets failed attempts and loads the desktop.
     currentUser = user;
     failedAttempts[username] = 0;
     lockUntil[username] = 0;
@@ -169,6 +188,7 @@ function login() {
     showScreen("desktopScreen");
 }
 
+// Tracks failed login attempts and locks the account for a short time.
 function recordFailedAttempt(username) {
     if (username === "") {
         return;
@@ -188,6 +208,7 @@ function recordFailedAttempt(username) {
     saveSecurityState();
 }
 
+// Ends the current session and returns to the login screen.
 function logout() {
     if (currentUser !== null) {
         addLog("logout by " + currentUser.username);
@@ -198,6 +219,10 @@ function logout() {
     showScreen("loginScreen");
 }
 
+// Access matrix:
+// admin = read, write, execute
+// user  = read, write
+// guest = read only
 function hasPermission(action) {
     if (currentUser.role === "admin") {
         return true;
@@ -214,6 +239,7 @@ function hasPermission(action) {
     return false;
 }
 
+// Demonstrates read permission by showing a fake OS file list.
 function viewFiles() {
     if (hasPermission("read")) {
         document.getElementById("outputBox").innerText =
@@ -228,6 +254,7 @@ function viewFiles() {
     }
 }
 
+// Checks the selected action against the access matrix.
 function requestAccess() {
     var action = document.getElementById("resourceSelect").value;
 
@@ -248,6 +275,7 @@ function requestAccess() {
     }
 }
 
+// Opens either the security lab panel or the audit log panel.
 function showSection(id) {
     document.getElementById("labSection").classList.add("hidden");
     document.getElementById("logSection").classList.add("hidden");
@@ -258,11 +286,13 @@ function showSection(id) {
     }
 }
 
+// Semaphore demo: one process enters the critical section while others wait.
 function runSemaphoreLab() {
     var count = parseInt(document.getElementById("processCount").value);
     var output = "secureOS> semaphore simulation\n";
     var semaphore = 1;
 
+    // Keep the process count inside a simple safe range for the demo.
     if (isNaN(count) || count < 2) {
         count = 2;
         document.getElementById("processCount").value = count;
@@ -276,6 +306,7 @@ function runSemaphoreLab() {
     output = output + "Number of processes: " + count + "\n";
     output = output + "Initial semaphore value = " + semaphore + "\n\n";
 
+    // Arrival phase shows wait(S) behavior.
     output = output + "Arrival phase:\n";
     for (var i = 1; i <= count; i++) {
         output = output + "P" + i + " arrives and calls wait(S)\n";
@@ -287,6 +318,7 @@ function runSemaphoreLab() {
         }
     }
 
+    // Execution phase shows signal(S) and waking the next process.
     output = output + "\nExecution phase:\n";
     for (var j = 1; j <= count; j++) {
         output = output + "P" + j + " is executing critical section\n";
@@ -314,6 +346,7 @@ function runSemaphoreLab() {
     addLog("semaphore lab run with " + count + " processes");
 }
 
+// Buffer overflow demo: compares input length with fixed buffer size.
 function runBufferLab() {
     var sampleInput = document.getElementById("bufferInput").value.trim();
     var bufferSize = 10;
@@ -324,6 +357,7 @@ function runBufferLab() {
         return;
     }
 
+    // Bounds check blocks input larger than the simulated buffer.
     if (sampleInput.length > bufferSize) {
         document.getElementById("outputBox").innerText =
             "secureOS> buffer overflow demo\n" +
@@ -341,11 +375,13 @@ function runBufferLab() {
     }
 }
 
+// Trapdoor scan demo: detects suspicious hidden account names.
 function runTrapdoorScan() {
     var mode = document.getElementById("trapdoorMode").value;
     var suspiciousUsers = ["admin", "user", "guest"];
     var anomaly = false;
 
+    // Attack mode injects a hidden administrator account.
     if (mode === "attack") {
         suspiciousUsers.push("hidden_admin");
     }
@@ -371,6 +407,7 @@ function runTrapdoorScan() {
     }
 }
 
+// Rebuilds the visible audit log list from the auditLogs array.
 function updateLogs() {
     var logList = document.getElementById("logList");
 
@@ -388,6 +425,7 @@ function updateLogs() {
     }
 }
 
+// Startup sequence for the web project.
 loadSavedData();
 setInterval(updateClock, 1000);
 updateClock();

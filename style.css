@@ -1,7 +1,9 @@
+/* Global reset: keeps element sizing predictable. */
 * {
     box-sizing: border-box;
 }
 
+/* Base page theme: dark terminal-style SecureOS look. */
 body {
     margin: 0;
     min-height: 100vh;
@@ -10,15 +12,18 @@ body {
     background: #050805;
 }
 
+/* Full-screen sections controlled by JavaScript. */
 .screen {
     min-height: 100vh;
     padding: 24px;
 }
 
+/* Utility class used to hide inactive screens and panels. */
 .hidden {
     display: none;
 }
 
+/* Boot screen background and centered layout. */
 .boot-screen {
     display: flex;
     align-items: center;
@@ -30,6 +35,7 @@ body {
     background-size: 28px 28px;
 }
 
+/* Boot card containing logo, status text, and progress bar. */
 .boot-box {
     width: min(520px, 90vw);
     text-align: center;
@@ -39,6 +45,7 @@ body {
     box-shadow: 0 0 32px rgba(30, 255, 117, 0.22);
 }
 
+/* SecureOS logo shown on the boot screen. */
 .boot-logo {
     width: 82px;
     height: 82px;
@@ -50,6 +57,7 @@ body {
     font-weight: bold;
 }
 
+/* Progress bar frame for the boot animation. */
 .boot-bar {
     height: 12px;
     border: 1px solid #1eff75;
@@ -57,6 +65,7 @@ body {
     padding: 2px;
 }
 
+/* Progress bar fill updated by script.js. */
 #bootProgress {
     height: 100%;
     width: 0%;
@@ -64,6 +73,7 @@ body {
     transition: width 0.4s linear;
 }
 
+/* Header bars for login and desktop screens. */
 .top-bar,
 .desktop-header {
     display: flex;
@@ -75,6 +85,7 @@ body {
     margin-bottom: 24px;
 }
 
+/* Shared box style used by panels, cards, and terminal output. */
 .login-panel,
 .card,
 .panel,
@@ -84,12 +95,14 @@ body {
     box-shadow: 0 0 22px rgba(30, 255, 117, 0.08);
 }
 
+/* Login form container. */
 .login-panel {
     width: min(430px, 94vw);
     margin: 70px auto 0;
     padding: 28px;
 }
 
+/* Removes default top margin for cleaner spacing. */
 h1,
 h2,
 h3,
@@ -97,17 +110,20 @@ p {
     margin-top: 0;
 }
 
+/* Muted helper text below headings. */
 .muted {
     color: #8dbb9a;
     font-size: 14px;
 }
 
+/* Small explanatory rule shown under the login form. */
 .hint {
     color: #8dbb9a;
     font-size: 12px;
     line-height: 1.5;
 }
 
+/* Form labels for login and lab controls. */
 label {
     display: block;
     margin-top: 16px;
@@ -115,6 +131,7 @@ label {
     color: #afffca;
 }
 
+/* Shared input and select styling. */
 input,
 select {
     width: 100%;
@@ -125,6 +142,7 @@ select {
     font-family: inherit;
 }
 
+/* Buttons for login, navigation, and lab actions. */
 button {
     border: 1px solid #1eff75;
     background: #08230f;
@@ -134,10 +152,12 @@ button {
     font-family: inherit;
 }
 
+/* Hover feedback for clickable buttons. */
 button:hover {
     background: #10491f;
 }
 
+/* Main login action button. */
 .primary-btn {
     width: 100%;
     margin-top: 18px;
@@ -146,6 +166,7 @@ button:hover {
     font-weight: bold;
 }
 
+/* Captcha text and refresh button layout. */
 .captcha-row {
     display: flex;
     align-items: center;
@@ -154,6 +175,7 @@ button:hover {
     margin-top: 18px;
 }
 
+/* Captcha display box with spaced characters. */
 #captchaText {
     flex: 1;
     padding: 12px;
@@ -164,27 +186,32 @@ button:hover {
     border: 1px dashed #1eff75;
 }
 
+/* Reserves space for login success/error messages. */
 .message {
     min-height: 22px;
     margin-top: 14px;
 }
 
+/* Four-card desktop grid for project modules. */
 .desktop-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(180px, 1fr));
     gap: 18px;
 }
 
+/* Individual feature card. */
 .card {
     padding: 18px;
     min-height: 190px;
 }
 
+/* Keeps card descriptions aligned by reserving text height. */
 .card p {
     color: #9ecdaa;
     min-height: 52px;
 }
 
+/* Terminal-like area for action results and lab output. */
 .terminal-output {
     margin-top: 22px;
     min-height: 110px;
@@ -193,11 +220,13 @@ button:hover {
     color: #1eff75;
 }
 
+/* Shared panel style for lab and log sections. */
 .panel {
     margin-top: 22px;
     padding: 18px;
 }
 
+/* One row inside the security lab panel. */
 .lab-row {
     display: flex;
     justify-content: space-between;
@@ -206,11 +235,13 @@ button:hover {
     border-top: 1px solid #174c28;
 }
 
+/* Scrollable audit log list. */
 .log-list {
     max-height: 260px;
     overflow: auto;
 }
 
+/* Header row for the audit log title and clear button. */
 .panel-title {
     display: flex;
     align-items: center;
@@ -218,12 +249,14 @@ button:hover {
     gap: 12px;
 }
 
+/* Single audit log entry. */
 .log-item {
     padding: 10px;
     border-bottom: 1px solid #174c28;
     color: #bfffd0;
 }
 
+/* Feedback colors for success and error text. */
 .success {
     color: #1eff75;
 }
@@ -232,12 +265,14 @@ button:hover {
     color: #ff6b6b;
 }
 
+/* Tablet layout: feature cards become two columns. */
 @media (max-width: 900px) {
     .desktop-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
+/* Mobile layout: cards and header stack vertically. */
 @media (max-width: 560px) {
     .desktop-grid {
         grid-template-columns: 1fr;
